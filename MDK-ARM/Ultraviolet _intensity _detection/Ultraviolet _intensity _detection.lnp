@@ -1,0 +1,23 @@
+--cpu Cortex-M3
+"ultraviolet _intensity _detection\startup_stm32f103xb.o"
+"ultraviolet _intensity _detection\main.o"
+"ultraviolet _intensity _detection\gpio.o"
+"ultraviolet _intensity _detection\stm32f1xx_it.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_msp.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_gpio_ex.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_rcc.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_rcc_ex.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_gpio.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_dma.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_cortex.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_pwr.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_flash.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_flash_ex.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_exti.o"
+"ultraviolet _intensity _detection\system_stm32f1xx.o"
+"ultraviolet _intensity _detection\oled_1315.o"
+--strict --scatter "Ultraviolet _intensity _detection\Ultraviolet _intensity _detection.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "Ultraviolet _intensity _detection.map" -o "Ultraviolet _intensity _detection\Ultraviolet _intensity _detection.axf"
