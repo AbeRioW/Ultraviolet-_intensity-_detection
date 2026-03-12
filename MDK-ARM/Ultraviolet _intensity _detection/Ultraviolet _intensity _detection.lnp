@@ -24,6 +24,7 @@
 "ultraviolet _intensity _detection\system_stm32f1xx.o"
 "ultraviolet _intensity _detection\oled_1315.o"
 "ultraviolet _intensity _detection\direct_8266.o"
+"ultraviolet _intensity _detection\flash_storage.o"
 --strict --scatter "Ultraviolet _intensity _detection\Ultraviolet _intensity _detection.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

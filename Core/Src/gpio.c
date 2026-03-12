@@ -22,7 +22,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "flash_storage.h"
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -79,5 +79,62 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
+static uint32_t last_key1_time = 0;
+static uint32_t last_key2_time = 0;
+static uint32_t last_key3_time = 0;
+#define KEY_DEBOUNCE_TIME 100
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    extern volatile uint8_t setting_mode;
+    extern volatile uint8_t threshold_value;
+    extern uint8_t last_threshold_value;
+    extern void Flash_WriteThreshold(uint8_t threshold);
+    
+    uint32_t current_time = HAL_GetTick();
+    
+    if (GPIO_Pin == KEY1_Pin)
+    {
+        if (current_time - last_key1_time > KEY_DEBOUNCE_TIME)
+        {
+            if (setting_mode)
+            {
+                Flash_WriteThreshold(threshold_value);
+                last_threshold_value = threshold_value;
+            }
+            setting_mode = !setting_mode;
+            last_key1_time = current_time;
+        }
+    }
+    else if (GPIO_Pin == KEY2_Pin)
+    {
+        if (current_time - last_key2_time > KEY_DEBOUNCE_TIME)
+        {
+            if (setting_mode)
+            {
+                threshold_value++;
+                if (threshold_value > 10)
+                {
+                    threshold_value = 1;
+                }
+                last_key2_time = current_time;
+            }
+        }
+    }
+    else if (GPIO_Pin == KEY3_Pin)
+    {
+        if (current_time - last_key3_time > KEY_DEBOUNCE_TIME)
+        {
+            if (setting_mode)
+            {
+                threshold_value--;
+                if (threshold_value < 1)
+                {
+                    threshold_value = 10;
+                }
+                last_key3_time = current_time;
+            }
+        }
+    }
+}
 /* USER CODE END 2 */

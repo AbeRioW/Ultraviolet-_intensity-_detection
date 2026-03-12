@@ -845,6 +845,16 @@
               <FileType>5</FileType>
               <FilePath>..\App\direct_8266.h</FilePath>
             </File>
+            <File>
+              <FileName>flash_storage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\flash_storage.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash_storage.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\flash_storage.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

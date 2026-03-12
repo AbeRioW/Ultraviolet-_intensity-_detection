@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "oled_1315.h"
 #include "direct_8266.h"
+#include "flash_storage.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +50,9 @@
 /* USER CODE BEGIN PV */
 uint16_t adc_value = 0;
 uint8_t first_display = 1;
+volatile uint8_t setting_mode = 0;
+volatile uint8_t threshold_value = 1;
+uint8_t last_threshold_value = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,7 +100,20 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
+  
+  // 显示WiFi配置中信息
+  OLED_Clear();
+  OLED_ShowString(0, 0, (uint8_t*)"WiFi Configuring...", 8);
+  OLED_ShowString(0, 2, (uint8_t*)"Please wait...", 8);
+  OLED_Refresh();
+  
   start_esp8266();
+  
+  threshold_value = Flash_ReadThreshold();
+  last_threshold_value = threshold_value;
+  
+  // 清除WiFi配置信息
+  OLED_Clear();
   
   /* USER CODE END 2 */
 
@@ -107,31 +124,57 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // 读取ADC值
-    HAL_ADC_Start(&hadc1);
-    if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK)
+    static uint8_t last_setting_mode = 0;
+    
+    if (setting_mode)
     {
-      adc_value = HAL_ADC_GetValue(&hadc1);
+        if (last_setting_mode != setting_mode)
+        {
+            OLED_Clear();
+            last_setting_mode = setting_mode;
+        }
+        
+        OLED_ShowString(0, 0, (uint8_t*)"Setting Mode:", 8);
+        OLED_ShowString(0, 1, (uint8_t*)"Threshold:", 8);
+        OLED_ShowNum(64, 1, threshold_value, 2, 8);
+        OLED_ShowString(0, 3, (uint8_t*)"K2:+ K3:-", 8);
+        OLED_Refresh();
+        
+        HAL_Delay(200);
     }
-    HAL_ADC_Stop(&hadc1);
-    
-    // 第一次显示时清除屏幕
-    if (first_display)
+    else
     {
-        OLED_Clear();
-        first_display = 0;
+        if (last_setting_mode != setting_mode)
+        {
+            OLED_Clear();
+            last_setting_mode = setting_mode;
+            first_display = 0;
+        }
+        
+        HAL_ADC_Start(&hadc1);
+        if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK)
+        {
+            adc_value = HAL_ADC_GetValue(&hadc1);
+        }
+        HAL_ADC_Stop(&hadc1);
+        
+        if (first_display)
+        {
+            OLED_Clear();
+            first_display = 0;
+        }
+        
+        OLED_ShowString(0, 0, (uint8_t*)"UV Intensity:", 8);
+        OLED_ShowNum(84, 0, adc_value, 4, 8);
+        
+        OLED_ShowString(0, 1, (uint8_t*)"Threshold:", 8);
+        OLED_ShowNum(64, 1, threshold_value, 2, 8);
+        
+        OLED_Refresh();
+        
+        handle_esp8266();
+        HAL_Delay(500);
     }
-    
-    // 显示标题和数值在同一行，使用相同大小的字体
-    OLED_ShowString(0, 0, (uint8_t*)"UV Intensity:", 8);
-    OLED_ShowNum(84, 0, adc_value, 4, 8);
-    
-    // 只刷新一次
-    OLED_Refresh();
-    
-    handle_esp8266();
-    // 延时
-    HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
