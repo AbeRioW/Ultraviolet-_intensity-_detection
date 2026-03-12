@@ -3,6 +3,7 @@
 "ultraviolet _intensity _detection\main.o"
 "ultraviolet _intensity _detection\gpio.o"
 "ultraviolet _intensity _detection\adc.o"
+"ultraviolet _intensity _detection\usart.o"
 "ultraviolet _intensity _detection\stm32f1xx_it.o"
 "ultraviolet _intensity _detection\stm32f1xx_hal_msp.o"
 "ultraviolet _intensity _detection\stm32f1xx_hal_gpio_ex.o"
@@ -18,8 +19,10 @@
 "ultraviolet _intensity _detection\stm32f1xx_hal_flash.o"
 "ultraviolet _intensity _detection\stm32f1xx_hal_flash_ex.o"
 "ultraviolet _intensity _detection\stm32f1xx_hal_exti.o"
+"ultraviolet _intensity _detection\stm32f1xx_hal_uart.o"
 "ultraviolet _intensity _detection\system_stm32f1xx.o"
 "ultraviolet _intensity _detection\oled_1315.o"
+"ultraviolet _intensity _detection\direct_8266.o"
 --strict --scatter "Ultraviolet _intensity _detection\Ultraviolet _intensity _detection.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

@@ -19,11 +19,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "oled_1315.h"
+#include "direct_8266.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,7 +43,7 @@
 
 /* USER CODE END PM */
 
-/* Private variables --------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 uint16_t adc_value = 0;
@@ -89,10 +91,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
-//  HAL_Delay(100);
-//  OLED_Test();
+  ESP8266_Init();
+  
+  // 配置ESP8266透传模式
+  ESP8266_ConnectWiFi("jingda830", "jd717718");
+  ESP8266_ConnectServer("192.168.1.100", 8080);
+  ESP8266_SetTransparentMode();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -123,6 +130,9 @@ int main(void)
     
     // 只刷新一次
     OLED_Refresh();
+    
+    // 处理ESP8266通信
+    ESP8266_Process();
     
     // 延时
     HAL_Delay(500);

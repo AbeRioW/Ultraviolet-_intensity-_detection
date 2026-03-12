@@ -28,3 +28,4 @@ ultraviolet _intensity _detection\adc.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm
 ultraviolet _intensity _detection\adc.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 ultraviolet _intensity _detection\adc.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 ultraviolet _intensity _detection\adc.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
+ultraviolet _intensity _detection\adc.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
