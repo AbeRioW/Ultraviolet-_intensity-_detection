@@ -3,23 +3,21 @@
 
 #include "main.h"
 #include "usart.h"
+#include "stdbool.h"
 
-#define ESP8266_RX_BUF_SIZE  256
-#define ESP8266_TX_BUF_SIZE  256
+#define AT_MODE2 		"AT+CWMODE=2\r\n"   //13
+#define AT_SET      "AT+CWSAP=\"ESP8266\",\"0123456789\",11,0\r\n"  //38
+#define AT_RST   		"AT+RST\r\n"  //8
+#define AT_CIPMUX 	"AT+CIPMUX=1\r\n"
+#define AT_CIPSERVER "AT+CIPSERVER=1,5000\r\n"  //start
 
-typedef enum {
-    ESP8266_IDLE = 0,
-    ESP8266_CONNECTED,
-    ESP8266_TRANSPARENT
-} ESP8266_StatusTypeDef;
 
-void ESP8266_Init(void);
-void ESP8266_Process(void);
-void ESP8266_SendData(uint8_t* data, uint16_t len);
-void ESP8266_SendString(char* str);
-ESP8266_StatusTypeDef ESP8266_GetStatus(void);
-void ESP8266_SetTransparentMode(void);
-void ESP8266_ConnectWiFi(char* ssid, char* password);
-void ESP8266_ConnectServer(char* ip, uint16_t port);
+
+extern bool device_connect;
+extern bool hand_shack;
+
+void handle_esp8266(void);
+bool start_esp8266(void);
+//void send_wifi(char *data,int size);
 
 #endif

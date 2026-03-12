@@ -29,3 +29,4 @@ ultraviolet _intensity _detection\usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/s
 ultraviolet _intensity _detection\usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 ultraviolet _intensity _detection\usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 ultraviolet _intensity _detection\usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+ultraviolet _intensity _detection\usart.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdbool.h

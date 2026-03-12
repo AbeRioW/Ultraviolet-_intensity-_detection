@@ -1,118 +1,85 @@
 #include "direct_8266.h"
 #include "stdio.h"
 #include "string.h"
+#include "oled_1315.h"
+#include "stdbool.h"
 
-static uint8_t rx_buf[ESP8266_RX_BUF_SIZE];
-static uint16_t rx_len = 0;
-static ESP8266_StatusTypeDef esp_status = ESP8266_IDLE;
+bool device_connect=false;
 
-extern UART_HandleTypeDef huart1;
-
-void ESP8266_Init(void)
-{
-    rx_len = 0;
-    esp_status = ESP8266_IDLE;
-    memset(rx_buf, 0, ESP8266_RX_BUF_SIZE);
-    HAL_UART_Receive_IT(&huart1, &rx_buf[rx_len], 1);
+bool start_esp8266(void)
+{ 
+	
+			HAL_UART_Transmit(&huart1,(uint8_t*)(AT_MODE2),13,0xffff);
+			HAL_Delay(1000);
+      HAL_UART_Transmit(&huart1,(uint8_t*)(AT_SET),38,0xffff);
+				HAL_Delay(1000);
+			
+			HAL_UART_Transmit(&huart1,(uint8_t*)(AT_RST),8,0xffff);
+			HAL_Delay(4000);
+			
+			HAL_UART_Transmit(&huart1,(uint8_t*)(AT_CIPMUX),13,0xffff);
+			HAL_Delay(1000);
+			
+		  HAL_UART_Transmit(&huart1,(uint8_t*)(AT_CIPSERVER),21,0xffff);
+			HAL_Delay(1000);
+			
+				__HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);  
+			HAL_UART_Receive_DMA(&huart1,uart1_rx,1000);   
+			 return true;
+			 
 }
 
-void ESP8266_Process(void)
+void send_wifi(char *data,int size)
 {
-    if (rx_len > 0)
-    {
-        if (rx_buf[rx_len - 1] == '\n' || rx_len >= ESP8266_RX_BUF_SIZE - 1)
-        {
-            rx_buf[rx_len] = '\0';
+	  int send_size=0;
+	  if(size<10)
+		{
+			 send_size=1; 
+		}
+		
+		if(size>10&&size<100)
+		{
+				send_size=2;
+		}
+		
+	  if(device_connect)
+		{
+			char send_data[50]={0};
+			char send_data1[50]={0};
+			sprintf(send_data,"AT+CIPSEND=0,%d\r\n",size);
+			HAL_UART_Transmit(&huart1,(uint8_t*)(send_data),15+send_size,0xffff);
 
-            if (strstr((char*)rx_buf, "OK") != NULL)
-            {
-                if (strstr((char*)rx_buf, "CONNECT") != NULL)
-                {
-                    esp_status = ESP8266_CONNECTED;
-                }
-            }
-
-            if (strstr((char*)rx_buf, "IPD") != NULL)
-            {
-                esp_status = ESP8266_CONNECTED;
-            }
-
-            if (strstr((char*)rx_buf, "CIFSR") != NULL)
-            {
-                esp_status = ESP8266_CONNECTED;
-            }
-
-            rx_len = 0;
-            memset(rx_buf, 0, ESP8266_RX_BUF_SIZE);
-        }
-    }
+			HAL_Delay(100);
+			HAL_UART_Transmit(&huart1,(uint8_t*)data,size,0xffff);
+		}
 }
 
-void ESP8266_SendData(uint8_t* data, uint16_t len)
-{
-    HAL_UART_Transmit(&huart1, data, len, 100);
-}
 
-void ESP8266_SendString(char* str)
+void handle_esp8266(void)
 {
-    uint16_t len = strlen(str);
-    HAL_UART_Transmit(&huart1, (uint8_t*)str, len, 100);
-}
+	static int i=0;
+	char *wifi_connect = "0,CONNECT";
 
-ESP8266_StatusTypeDef ESP8266_GetStatus(void)
-{
-    return esp_status;
-}
+	char *lay1on = "\r\n+IPD,0,6:lay1on";
+	char *lay1off = "\r\n+IPD,0,7:lay1off";	
+	
+	char *lay2on = "\r\n+IPD,0,6:lay2on";
+	char *lay2off = "\r\n+IPD,0,7:lay2off";		
+	
+	char *fanon = "\r\n+IPD,0,5:fanon";
+	char *fanoff = "\r\n+IPD,0,6:fanoff";
 
-void ESP8266_ConnectWiFi(char* ssid, char* password)
-{
-    char cmd[100];
-    
-    // 设置为Station+AP模式
-    ESP8266_SendString("AT+CWMODE=3\r\n");
-    HAL_Delay(1000);
-    
-    // 连接WiFi
-    sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password);
-    ESP8266_SendString(cmd);
-    HAL_Delay(5000);
-}
-
-void ESP8266_ConnectServer(char* ip, uint16_t port)
-{
-    char cmd[100];
-    
-    // 设置为单连接模式
-    ESP8266_SendString("AT+CIPMUX=0\r\n");
-    HAL_Delay(1000);
-    
-    // 连接到服务器
-    sprintf(cmd, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", ip, port);
-    ESP8266_SendString(cmd);
-    HAL_Delay(3000);
-}
-
-void ESP8266_SetTransparentMode(void)
-{
-    // 开启透传模式
-    ESP8266_SendString("AT+CIPMODE=1\r\n");
-    HAL_Delay(1000);
-    
-    // 开始透传
-    ESP8266_SendString("AT+CIPSEND\r\n");
-    HAL_Delay(1000);
-    
-    esp_status = ESP8266_TRANSPARENT;
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        if (rx_len < ESP8266_RX_BUF_SIZE - 1)
-        {
-            rx_len++;
-        }
-        HAL_UART_Receive_IT(&huart1, &rx_buf[rx_len], 1);
-    }
+	if(rx1_end_flag)
+	{
+			rx1_end_flag = false;
+		  if(memcmp(uart1_rx,wifi_connect,9)==0)  //wifiґÁ¬½ӊ			
+				{
+						device_connect=true;
+					  OLED_ShowString(0, 1, (uint8_t*)"Client Connect", 8);
+					   OLED_Refresh();
+			  }
+			rx1_count=0;
+			memset(uart1_rx,0,1000);
+			HAL_UART_Receive_DMA(&huart1,uart1_rx,1000);  //ШҪ֘Ђƴ¶¯DMA
+	} 			
 }

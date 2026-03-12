@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -90,16 +91,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   OLED_Init();
-  ESP8266_Init();
+  start_esp8266();
   
-  // 配置ESP8266透传模式
-  ESP8266_ConnectWiFi("jingda830", "jd717718");
-  ESP8266_ConnectServer("192.168.1.100", 8080);
-  ESP8266_SetTransparentMode();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,9 +129,7 @@ int main(void)
     // 只刷新一次
     OLED_Refresh();
     
-    // 处理ESP8266通信
-    ESP8266_Process();
-    
+    handle_esp8266();
     // 延时
     HAL_Delay(500);
   }

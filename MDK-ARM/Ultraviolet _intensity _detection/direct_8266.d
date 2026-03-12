@@ -30,5 +30,8 @@ ultraviolet _intensity _detection\direct_8266.o: ../Drivers/STM32F1xx_HAL_Driver
 ultraviolet _intensity _detection\direct_8266.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 ultraviolet _intensity _detection\direct_8266.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 ultraviolet _intensity _detection\direct_8266.o: ../Core/Inc/usart.h
+ultraviolet _intensity _detection\direct_8266.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdbool.h
 ultraviolet _intensity _detection\direct_8266.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdio.h
 ultraviolet _intensity _detection\direct_8266.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\string.h
+ultraviolet _intensity _detection\direct_8266.o: ..\App\oled_1315.h
+ultraviolet _intensity _detection\direct_8266.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdlib.h

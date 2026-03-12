@@ -29,7 +29,9 @@ ultraviolet _intensity _detection\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/st
 ultraviolet _intensity _detection\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 ultraviolet _intensity _detection\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 ultraviolet _intensity _detection\main.o: ../Core/Inc/adc.h
+ultraviolet _intensity _detection\main.o: ../Core/Inc/dma.h
 ultraviolet _intensity _detection\main.o: ../Core/Inc/usart.h
+ultraviolet _intensity _detection\main.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdbool.h
 ultraviolet _intensity _detection\main.o: ../Core/Inc/gpio.h
 ultraviolet _intensity _detection\main.o: ../App/oled_1315.h
 ultraviolet _intensity _detection\main.o: D:\Program Files\KEIL5\ARM\ARMCC\Bin\..\include\stdlib.h

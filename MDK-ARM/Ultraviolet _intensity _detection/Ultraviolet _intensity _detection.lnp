@@ -3,6 +3,7 @@
 "ultraviolet _intensity _detection\main.o"
 "ultraviolet _intensity _detection\gpio.o"
 "ultraviolet _intensity _detection\adc.o"
+"ultraviolet _intensity _detection\dma.o"
 "ultraviolet _intensity _detection\usart.o"
 "ultraviolet _intensity _detection\stm32f1xx_it.o"
 "ultraviolet _intensity _detection\stm32f1xx_hal_msp.o"
