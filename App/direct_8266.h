@@ -18,6 +18,6 @@ extern bool hand_shack;
 
 void handle_esp8266(void);
 bool start_esp8266(void);
-//void send_wifi(char *data,int size);
+void send_wifi(char *data,int size);
 
 #endif

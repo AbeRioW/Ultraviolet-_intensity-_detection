@@ -59,7 +59,7 @@ void handle_esp8266(void)
 {
 	static int i=0;
 	char *wifi_connect = "0,CONNECT";
-
+   char *wifi_disconnect = "0,CLOSE";
 	char *lay1on = "\r\n+IPD,0,6:lay1on";
 	char *lay1off = "\r\n+IPD,0,7:lay1off";	
 	
@@ -75,7 +75,7 @@ void handle_esp8266(void)
 		  if(memcmp(uart1_rx,wifi_connect,9)==0)  //wifiґÁ¬½ӊ			
 				{
 						device_connect=true;
-					  OLED_ShowString(0, 1, (uint8_t*)"Client Connect", 8);
+					  OLED_ShowString(0, 3, (uint8_t*)"Client Connected", 8);
 					   OLED_Refresh();
 			  }
 			rx1_count=0;
