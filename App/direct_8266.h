@@ -15,6 +15,7 @@
 
 extern bool device_connect;
 extern bool hand_shack;
+extern bool wifi_closed_flag;
 
 void handle_esp8266(void);
 bool start_esp8266(void);

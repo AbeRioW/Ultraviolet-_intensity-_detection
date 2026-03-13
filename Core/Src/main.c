@@ -53,6 +53,10 @@ uint8_t first_display = 1;
 volatile uint8_t setting_mode = 0;
 volatile uint8_t threshold_value = 1;
 uint8_t last_threshold_value = 1;
+
+// HC-SR505相关变量
+uint8_t hc_sr505_counter = 0;
+uint8_t alarm_active = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -143,43 +147,106 @@ int main(void)
         HAL_Delay(200);
     }
     else
-    {
-        if (last_setting_mode != setting_mode)
         {
-            OLED_Clear();
-            last_setting_mode = setting_mode;
-            first_display = 0;
+            if (last_setting_mode != setting_mode)
+            {
+                OLED_Clear();
+                last_setting_mode = setting_mode;
+                first_display = 0;
+            }
+            
+            HAL_ADC_Start(&hadc1);
+            if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK)
+            {
+                adc_value = HAL_ADC_GetValue(&hadc1);
+            }
+            HAL_ADC_Stop(&hadc1);
+            
+            // 检测HC-SR505状态
+            if (HAL_GPIO_ReadPin(HC_SR505_GPIO_Port, HC_SR505_Pin) == GPIO_PIN_SET)
+            {
+                if (hc_sr505_counter < 10)
+                {
+                    hc_sr505_counter++;
+                }
+            }
+            else
+            {
+                hc_sr505_counter = 0;
+                if (alarm_active)
+                {
+                    // 关闭蜂鸣器
+                    HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_SET);
+                    alarm_active = 0;
+                }
+            }
+            
+            // 判断是否触发报警
+            if (hc_sr505_counter >= 10 && adc_value > threshold_value && !alarm_active)
+            {
+                // 开启蜂鸣器
+                HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_RESET);
+                alarm_active = 1;
+                
+                // 发送报警数据到ESP8266
+                char alarm_data[30];
+                sprintf(alarm_data, "ALARM:UV=%d,MOTION=1", adc_value);
+                send_wifi(alarm_data, strlen(alarm_data));
+            }
+            
+            if (first_display)
+            {
+                OLED_Clear();
+                first_display = 0;
+            }
+            
+            OLED_ShowString(0, 0, (uint8_t*)"UV Intensity:", 8);
+            OLED_ShowNum(84, 0, adc_value, 4, 8);
+            
+            OLED_ShowString(0, 1, (uint8_t*)"Threshold:", 8);
+            OLED_ShowNum(64, 1, threshold_value, 2, 8);
+            
+            OLED_ShowString(0, 2, (uint8_t*)"Motion:", 8);
+            if (HAL_GPIO_ReadPin(HC_SR505_GPIO_Port, HC_SR505_Pin) == GPIO_PIN_SET)
+            {
+                OLED_ShowString(56, 2, (uint8_t*)"YES", 8);
+            }
+            else
+            {
+                OLED_ShowString(56, 2, (uint8_t*)"NO ", 8);
+            }
+            
+            OLED_ShowString(0, 3, (uint8_t*)"Alarm:", 8);
+            if (alarm_active)
+            {
+                OLED_ShowString(56, 3, (uint8_t*)"ACTIVE  ", 8);
+            }
+            else
+            {
+                OLED_ShowString(56, 3, (uint8_t*)"INACTIVE", 8);
+            }
+            
+            OLED_ShowString(0, 4, (uint8_t*)"WiFi:", 8);
+            extern bool device_connect;
+            if (device_connect)
+            {
+                OLED_ShowString(56, 4, (uint8_t*)"Connected   ", 8);
+            }
+            else
+            {
+                OLED_ShowString(56, 4, (uint8_t*)"Disconnected", 8);
+            }
+            
+            OLED_Refresh();
+            
+            // 发送UV值到ESP8266
+            char wifi_data[20];
+            sprintf(wifi_data, "UV:%d", adc_value);
+            send_wifi(wifi_data, strlen(wifi_data));
+            
+            handle_esp8266();
+            HAL_Delay(100);
         }
-        
-        HAL_ADC_Start(&hadc1);
-        if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK)
-        {
-            adc_value = HAL_ADC_GetValue(&hadc1);
-        }
-        HAL_ADC_Stop(&hadc1);
-        
-        if (first_display)
-        {
-            OLED_Clear();
-            first_display = 0;
-        }
-        
-        OLED_ShowString(0, 0, (uint8_t*)"UV Intensity:", 8);
-        OLED_ShowNum(84, 0, adc_value, 4, 8);
-        
-        OLED_ShowString(0, 1, (uint8_t*)"Threshold:", 8);
-        OLED_ShowNum(64, 1, threshold_value, 2, 8);
-        
-        OLED_Refresh();
-        
-        // 发送UV值到ESP8266
-        char wifi_data[20];
-        sprintf(wifi_data, "UV:%d", adc_value);
-        send_wifi(wifi_data, strlen(wifi_data));
-        
-        handle_esp8266();
-        HAL_Delay(500);
-    }
   }
   /* USER CODE END 3 */
 }
