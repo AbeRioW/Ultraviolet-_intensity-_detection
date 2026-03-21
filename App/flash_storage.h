@@ -8,7 +8,7 @@ extern "C" {
 #include "main.h"
 #include <stdint.h>
 
-#define FLASH_STORAGE_ADDR    0x0801FC00
+#define FLASH_STORAGE_ADDR    0x0800FC00
 #define DEFAULT_THRESHOLD     1
 
 uint8_t Flash_ReadThreshold(void);

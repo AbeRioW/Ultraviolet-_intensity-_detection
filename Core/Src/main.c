@@ -240,12 +240,20 @@ int main(void)
             OLED_Refresh();
             
             // 发送UV值到ESP8266
-            char wifi_data[20];
-            sprintf(wifi_data, "UV:%d", adc_value);
-            send_wifi(wifi_data, strlen(wifi_data));
+            extern bool set_flag;
+            if (!set_flag)
+            {
+                char wifi_data[20];
+                sprintf(wifi_data, "UV:%d", adc_value);
+                send_wifi(wifi_data, strlen(wifi_data));
+            }
+            else
+            {
+                set_flag = false; // 重置标志
+            }
             
             handle_esp8266();
-            HAL_Delay(100);
+            HAL_Delay(2000);
         }
   }
   /* USER CODE END 3 */

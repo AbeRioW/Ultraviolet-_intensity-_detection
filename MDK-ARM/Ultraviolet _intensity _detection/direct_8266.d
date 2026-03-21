@@ -35,3 +35,4 @@ ultraviolet _intensity _detection\direct_8266.o: C:\Keil_v5\ARM\ARMCC\Bin\..\inc
 ultraviolet _intensity _detection\direct_8266.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ultraviolet _intensity _detection\direct_8266.o: ..\App\oled_1315.h
 ultraviolet _intensity _detection\direct_8266.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+ultraviolet _intensity _detection\direct_8266.o: ..\App\flash_storage.h

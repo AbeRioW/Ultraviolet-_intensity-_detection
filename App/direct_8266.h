@@ -5,17 +5,19 @@
 #include "usart.h"
 #include "stdbool.h"
 
-#define AT_MODE2 		"AT+CWMODE=2\r\n"   //13
-#define AT_SET      "AT+CWSAP=\"ESP8266\",\"0123456789\",11,0\r\n"  //38
-#define AT_RST   		"AT+RST\r\n"  //8
-#define AT_CIPMUX 	"AT+CIPMUX=1\r\n"
-#define AT_CIPSERVER "AT+CIPSERVER=1,5000\r\n"  //start
+#define AT_MODE2 		  "AT+CWMODE=2\r\n"   //13
+#define AT_SET        "AT+CWSAP=\"ESP8266\",\"0123456789\",11,0\r\n"  //38
+#define AT_RST   		  "AT+RST\r\n"  //8
+#define AT_CIPMUX 	  "AT+CIPMUX=1\r\n"
+#define AT_CIPSERVER  "AT+CIPSERVER=1,5000\r\n"  //start
 
 
 
 extern bool device_connect;
 extern bool hand_shack;
 extern bool wifi_closed_flag;
+extern bool set_flag;
+extern volatile uint8_t threshold_value;
 
 void handle_esp8266(void);
 bool start_esp8266(void);
